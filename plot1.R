@@ -1,0 +1,11 @@
+library(data.table)
+library(lubridate)
+housecoms_all<-read.table("household_power_consumption.txt",header = TRUE, sep = ";")
+housecoms_all$Date_Time<-as.POSIXct(dmy_hms(paste(housecoms_all$Date,housecoms_all$Time)))
+housecoms_sub<-housecoms_all[year(housecoms_all$Date_Time)==2007 & month(housecoms_all$Date_Time)==2 & mday(housecoms_all$Date_Time) %in% c(1,2),c("Date_Time","Global_active_power")]
+rm(list="housecoms_all")
+housecoms_sub$Global_active_power<-as.numeric(as.character(housecoms_sub$Global_active_power))
+png(filename = "plot1.png", height = 480, width = 480)
+hist(housecoms_sub$Global_active_power, breaks = 12 , main = "Global Active Power", xlab = "Global Active Power (killowatts)", ylab = "Frequency", col = "red",xlim = c(0,6),ylim = c(0,1200),xaxt="n")
+axis(side = 1, at=c(0,2,4,6))
+dev.off()
